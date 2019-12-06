@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1">>
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="33dp"
         android:layout_marginTop="45dp"
         android:gravity="center"
         android:text=" Email ="
@@ -28,4 +26,57 @@
         android:text="LOGOUT"
         android:textSize="10dp" />
 
-</RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="@string/point_start_textView"
+        android:textSize="20sp"
+        android:id="@+id/start_point"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/static_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/start_point"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:id="@+id/simpleImageView"
+        android:layout_width="fill_parent"
+        android:layout_height="272dp"
+        android:layout_below="@+id/static_spinner"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/map" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/simpleImageView"
+
+        android:text="@string/give_your_end_point_TextView"
+        android:textSize="20sp"
+        android:id="@+id/textView2"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/spinner_end_point"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
+      />
+
+    <Button
+        android:id="@+id/seeRoute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinner_end_point"
+
+        android:text="See route" />
+
+</LinearLayout>

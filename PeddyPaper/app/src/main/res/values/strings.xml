@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PeddyPaper</string>
+    <string name="point_start_textView">Give your start point</string>
+    <string name="give_your_end_point_TextView">Give your end point</string>
 </resources>

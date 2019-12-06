@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         Password = (EditText)findViewById(R.id.editPassword);
 
         sqLiteHelper = new SQLiteHelper(this);
-
+        //sqLiteHelper.dodajKontakt("Museum","Fajne");
         //Adding click listener to log in button.
         LogInButton.setOnClickListener(new View.OnClickListener() {
             @Override
