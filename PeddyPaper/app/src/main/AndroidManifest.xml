@@ -19,6 +19,7 @@
         <activity android:name=".RegisterActivity"></activity>
         <activity android:name=".DashboardActivity"></activity>
         <activity android:name=".RouteInformationActivity"></activity>
+        <activity android:name=".DescriptionOfPoint"></activity>
     </application>
 
 </manifest>

@@ -23,6 +23,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     public static final String Table_Column_3_Password="password";
 
+    //public static final String Start_Point_Name="start_point_name";
+   // public static final String End_Point_Name="end_point_name";
+
     public static final String TABLE_POINTS="PointsTable";
     public static final String Id_Point="Id";
     public static final String Name="Name";
@@ -131,12 +134,34 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
 
+    public Cursor getData(){
+        SQLiteDatabase db = this.getWritableDatabase();
+int startDateQueryDate=0;
+int endDateQueryDate=10;
+
+            String query = "SELECT * FROM " + TABLE_POINTS + " where Id BETWEEN " + startDateQueryDate  + " AND " + endDateQueryDate;
+            Cursor data = db.rawQuery(query, null);
+
+            return data;
+
+    }
 
 
 
 
-
-
-
+    public Cursor getItemID(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " + Id_Point + "," + Description + " FROM " + TABLE_POINTS +
+                " WHERE " + Name + " = '" + name + "'";
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
+    public Cursor getItemID_d(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " + Description + " FROM " + TABLE_POINTS +
+                " WHERE " + Name + " = '" + name + "'";
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
 
 }

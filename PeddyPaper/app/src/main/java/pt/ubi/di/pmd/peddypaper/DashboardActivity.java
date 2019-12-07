@@ -77,7 +77,9 @@ public class DashboardActivity extends Activity implements AdapterView.OnItemSel
         });
 
     }
-    String text;
+    String start_point;
+    String end_point;
+    int id_end_point;
     @Override
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
         if(parent.getId() == spinner_start_point.getId())
@@ -103,13 +105,15 @@ public class DashboardActivity extends Activity implements AdapterView.OnItemSel
 
                     break;
                 case 1:
-                     text = spinner_end_point.getSelectedItem().toString();
-                    Toast.makeText(DashboardActivity.this,"You chosen "+text, Toast.LENGTH_SHORT).show();
+                    end_point = spinner_end_point.getSelectedItem().toString();
+                    id_end_point=position;
+                    Toast.makeText(DashboardActivity.this,"You chosen "+id_end_point, Toast.LENGTH_SHORT).show();
 
                     break;
                 case 2:
-                    text = spinner_end_point.getSelectedItem().toString();
-                    Toast.makeText(DashboardActivity.this,"You chosen "+text, Toast.LENGTH_SHORT).show();
+                    end_point = spinner_end_point.getSelectedItem().toString();
+                    id_end_point=position;
+                    Toast.makeText(DashboardActivity.this,"You chosen "+id_end_point, Toast.LENGTH_SHORT).show();
 
                     break;
 
