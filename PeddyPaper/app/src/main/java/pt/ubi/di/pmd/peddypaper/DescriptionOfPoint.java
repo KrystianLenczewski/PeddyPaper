@@ -13,12 +13,12 @@ import androidx.appcompat.app.AppCompatActivity;
 public class DescriptionOfPoint extends AppCompatActivity {
 
 
-    private Button buttonSave,buttonDelete;
+
     private EditText editable_item;
     private EditText idd;
-
+    Button verifyPosition;
     SQLiteHelper mDatabaseHelper;
-private int idInt;
+    private int idInt;
     private String selectedName;
     private String description;
     private int selectedID;
@@ -27,10 +27,10 @@ private int idInt;
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.description_of_point);
-        buttonSave = (Button) findViewById(R.id.btnSave);
-        buttonDelete = (Button) findViewById(R.id.btnDelete);
+
         editable_item = (EditText) findViewById(R.id.editable_item);
         idd=(EditText)findViewById(R.id.description_of_point);
+        verifyPosition=(Button)findViewById(R.id.verifyPosition);
 
         //mDatabaseHelper = new SQLiteHelper(this);
 
@@ -43,7 +43,16 @@ private int idInt;
         //idd.setText(""+selectedID);
         editable_item.setText(selectedName);
         idd.setText(description);
+        verifyPosition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                // Opening new user registration activity using intent on button click.
+                Intent intent = new Intent(DescriptionOfPoint.this, PositionverifierActivity.class);
+                startActivity(intent);
+
+            }
+        });
 
     }
 
