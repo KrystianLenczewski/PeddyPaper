@@ -17,6 +17,7 @@ public class RouteInformationActivity extends Activity {
     SQLiteHelper myDb;
 
     private ListView mListView;
+    String userName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +31,10 @@ public class RouteInformationActivity extends Activity {
 
     private void dataListView() {
 
-
-        Cursor data = myDb.getData();
+        Intent receivedIntent = getIntent();
+        myDb = new SQLiteHelper(this);
+        userName = receivedIntent.getStringExtra("userEmail");
+        Cursor data = myDb.getDataFormUserTable(userName);
         ArrayList<String> listData = new ArrayList<>();
 
         while (data.moveToNext()) {

@@ -144,16 +144,26 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     public Cursor getData(){
         SQLiteDatabase db = this.getWritableDatabase();
-int startDateQueryDate=5;
-int endDateQueryDate=20;
+int startDateQueryDate=1;
+int endDateQueryDate=28;
 
-            String query = "SELECT * FROM " + TABLE_POINTS + " where Id BETWEEN " + startDateQueryDate  + " AND " + endDateQueryDate;
+            String query = "SELECT * FROM " + TABLE_POINTS;
             Cursor data = db.rawQuery(query, null);
 
             return data;
 
     }
+    public Cursor getDataFormUserTable(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int startDateQueryDate=1;
+        int endDateQueryDate=20;
 
+        String query = "SELECT * FROM " + name + " where Id BETWEEN " + startDateQueryDate  + " AND " + endDateQueryDate;
+        Cursor data = db.rawQuery(query, null);
+
+        return data;
+
+    }
 
 
 
@@ -176,7 +186,7 @@ int endDateQueryDate=20;
     public void newTableForUser( String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS "+name);
-        onCreate(db);
+
         String CREATE_TABLE="CREATE TABLE IF NOT EXISTS "+name+" ("+Id_Point+" INTEGER PRIMARY KEY, "+Name+" VARCHAR)";
         db.execSQL(CREATE_TABLE);
 
