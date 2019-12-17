@@ -2,6 +2,7 @@ package pt.ubi.di.pmd.peddypaper;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,7 +27,7 @@ public class DashboardActivity extends Activity implements AdapterView.OnItemSel
     private Spinner spinner_end_point;
     ArrayList<String> list_end;
     ArrayAdapter<String> adapter_end;
-    private static final String[] paths = {"item 1", "item 2", "item 3"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,8 +78,21 @@ public class DashboardActivity extends Activity implements AdapterView.OnItemSel
 
              Intent intent=new Intent(DashboardActivity.this,RouteInformationActivity.class);
              startActivity(intent);
+                datahelper.newTableForUser(EmailHolder);
 
-            }
+                   // datahelper.insertData("hello", EmailHolder);
+                Cursor data = datahelper.getData();
+
+                int itemID = -1;
+                String description="";
+
+                while (data.moveToNext()) {
+                    itemID = data.getInt(0);
+                    description=data.getString(1);
+                    datahelper.insertData(description, EmailHolder);
+                }
+                }
+
         });
 
     }
@@ -116,7 +130,7 @@ public class DashboardActivity extends Activity implements AdapterView.OnItemSel
 
         }
 
-if(k==1) {
+    if(k==1) {
     list_end=datahelper.getAllPoints();
     adapter_end=new ArrayAdapter<String>(this, R.layout.spinner_layout, R.id.text, list_end);
     k=0;
@@ -128,7 +142,7 @@ if(k==1) {
     spinner_end_point.setAdapter(adapter_end);
 
     spinner_end_point.setOnItemSelectedListener(this);
-}
+    }
          if(parent.getId() == spinner_end_point.getId())
         {
 

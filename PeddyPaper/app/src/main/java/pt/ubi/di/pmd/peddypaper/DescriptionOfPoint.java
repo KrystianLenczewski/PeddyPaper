@@ -1,5 +1,6 @@
 package pt.ubi.di.pmd.peddypaper;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,12 +11,12 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class DescriptionOfPoint extends AppCompatActivity {
+public class DescriptionOfPoint extends Activity {
 
 
 
-    private EditText editable_item;
-    private EditText idd;
+    private TextView editable_item;
+    private TextView idd;
     Button verifyPosition;
     SQLiteHelper mDatabaseHelper;
     private int idInt;
@@ -28,8 +29,8 @@ public class DescriptionOfPoint extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.description_of_point);
 
-        editable_item = (EditText) findViewById(R.id.editable_item);
-        idd=(EditText)findViewById(R.id.description_of_point);
+        editable_item = (TextView) findViewById(R.id.editable_item);
+        idd=(TextView)findViewById(R.id.description_of_point);
         verifyPosition=(Button)findViewById(R.id.verifyPosition);
 
         //mDatabaseHelper = new SQLiteHelper(this);
@@ -49,6 +50,7 @@ public class DescriptionOfPoint extends AppCompatActivity {
 
                 // Opening new user registration activity using intent on button click.
                 Intent intent = new Intent(DescriptionOfPoint.this, PositionverifierActivity.class);
+                intent.putExtra("name", selectedName);
                 startActivity(intent);
 
             }
