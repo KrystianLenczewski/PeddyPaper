@@ -114,6 +114,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 while (cursor.moveToNext()) {
                     // Add province name to arraylist
                     String pname= cursor.getString(cursor.getColumnIndex("Name"));
+                    pname=pname.concat("-");
+                    pname=pname.concat(cursor.getString(cursor.getColumnIndex("Id")));
                     list.add(pname);
 
                 }
@@ -158,7 +160,7 @@ int endDateQueryDate=28;
         int startDateQueryDate=1;
         int endDateQueryDate=20;
 
-        String query = "SELECT * FROM " + name + " where Id BETWEEN " + startDateQueryDate  + " AND " + endDateQueryDate;
+        String query = "SELECT * FROM " + name;
         Cursor data = db.rawQuery(query, null);
 
         return data;
@@ -174,6 +176,16 @@ int endDateQueryDate=28;
         Cursor data = db.rawQuery(query, null);
         return data;
     }
+
+
+    public Cursor getDatapoint(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " + Id_Point + "," + Description + " FROM " + TABLE_POINTS +
+                " WHERE " + Id_Point + " = '" + id + "'";
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
+
     public Cursor getItemIDD(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT " + Id_Point + "," + CheckPointName + " FROM " + TABLE_POINTS +
@@ -183,23 +195,41 @@ int endDateQueryDate=28;
     }
 
 
+    public static final String PointPosition="PointPosition";
     public void newTableForUser( String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS "+name);
 
-        String CREATE_TABLE="CREATE TABLE IF NOT EXISTS "+name+" ("+Id_Point+" INTEGER PRIMARY KEY, "+Name+" VARCHAR)";
+        String CREATE_TABLE="CREATE TABLE IF NOT EXISTS "+name+" ("+Id_Point+" INTEGER PRIMARY KEY, "+Name+" VARCHAR, "+Description+" VARCHAR, "+CheckPointName+" VARCHAR, "+PointPosition+" VARCHAR)";
         db.execSQL(CREATE_TABLE);
 
     }
-    public boolean insertData(String name,String tableName) {
+    public boolean insertData(String name,String tableName,int position,String description,String checkPassword) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(Name,name);
+        contentValues.put(PointPosition,position);
+        contentValues.put(Description,description);
+        contentValues.put(CheckPointName,checkPassword);
         long result = db.insert(tableName,null ,contentValues);
         if(result == -1)
             return false;
         else
             return true;
+    }
+    public Cursor getDataFromUserTablee(int id,String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " + Id_Point + "," + Description + " FROM " + name +
+                " WHERE " + Id_Point + " = '" + id + "'";
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
+    public Cursor ForVerifyPosition(int id,String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " + Id_Point + "," + CheckPointName + " FROM " + name +
+                " WHERE " + Id_Point + " = '" + id + "'";
+        Cursor data = db.rawQuery(query, null);
+        return data;
     }
 
 

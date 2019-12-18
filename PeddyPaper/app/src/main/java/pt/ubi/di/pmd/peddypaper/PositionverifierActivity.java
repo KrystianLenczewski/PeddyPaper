@@ -14,7 +14,9 @@ public class PositionverifierActivity extends Activity {
     EditText positionPassword;
     Button buttonCheck;
     SQLiteHelper myDb;
-    private String selected_ID;
+    private int selected_ID;
+    String userName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,21 +25,22 @@ public class PositionverifierActivity extends Activity {
         buttonCheck=(Button)findViewById(R.id.button_Check);
         Intent receivedIntent = getIntent();
         myDb = new SQLiteHelper(this);
-        selected_ID = receivedIntent.getStringExtra("name");
+        selected_ID = receivedIntent.getIntExtra("name",-1);
+        userName = receivedIntent.getStringExtra("tableName");
         buttonCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Cursor data = myDb.getItemIDD(selected_ID);
+                Cursor data = myDb.ForVerifyPosition(selected_ID,userName);
                 int itemID = -1;
-                String description="";
+                String passwordForPoint="";
                 while (data.moveToNext()) {
-                    description=data.getString(1);
+                    passwordForPoint=data.getString(1);
                 }
 
-                if(positionPassword.getText().toString().equals(description))
+                if(positionPassword.getText().toString().equals(passwordForPoint))
                 {
-                    Toast.makeText(PositionverifierActivity.this,"Very good , You earn one point"+ description,Toast.LENGTH_LONG).show();
+                    Toast.makeText(PositionverifierActivity.this,"Very good , You earn one point"+ passwordForPoint,Toast.LENGTH_LONG).show();
                 }
                 else
                 {

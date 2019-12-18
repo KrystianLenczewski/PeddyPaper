@@ -38,7 +38,8 @@ public class RouteInformationActivity extends Activity {
         ArrayList<String> listData = new ArrayList<>();
 
         while (data.moveToNext()) {
-            listData.add(data.getString(1));
+            listData.add(data.getString(1)+" "+data.getInt(4));
+
 
         }
 
@@ -51,7 +52,7 @@ public class RouteInformationActivity extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String name = adapterView.getItemAtPosition(i).toString();
 
-                Cursor data = myDb.getItemID(name);
+                Cursor data = myDb.getDataFromUserTablee(i+1,userName);
 
                 int itemID = -1;
                 String description="";
@@ -66,6 +67,7 @@ public class RouteInformationActivity extends Activity {
                     editIntent.putExtra("id", itemID);
                     editIntent.putExtra("name", name);
                     editIntent.putExtra("description", description);
+                    editIntent.putExtra("userEmail", userName);
 
 
                     startActivity(editIntent);

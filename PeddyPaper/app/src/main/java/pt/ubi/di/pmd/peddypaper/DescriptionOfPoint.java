@@ -21,6 +21,8 @@ public class DescriptionOfPoint extends Activity {
     SQLiteHelper mDatabaseHelper;
     private int idInt;
     private String selectedName;
+    private String userName;
+
     private String description;
     private int selectedID;
 
@@ -40,8 +42,9 @@ public class DescriptionOfPoint extends Activity {
         selectedID = receivedIntent.getIntExtra("id",-1);
         selectedName = receivedIntent.getStringExtra("name");
         description = receivedIntent.getStringExtra("description");
+        userName = receivedIntent.getStringExtra("userEmail");
 
-        //idd.setText(""+selectedID);
+        //idVerify.setText(""+selectedID);
         editable_item.setText(selectedName);
         idd.setText(description);
         verifyPosition.setOnClickListener(new View.OnClickListener() {
@@ -50,7 +53,8 @@ public class DescriptionOfPoint extends Activity {
 
                 // Opening new user registration activity using intent on button click.
                 Intent intent = new Intent(DescriptionOfPoint.this, PositionverifierActivity.class);
-                intent.putExtra("name", selectedName);
+                intent.putExtra("name", selectedID);
+                intent.putExtra("tableName", userName);
                 startActivity(intent);
 
             }
