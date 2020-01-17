@@ -22,6 +22,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public static final String Table_Column_2_Email="email";
 
     public static final String Table_Column_3_Password="password";
+    public static final String Table_Column_4_Score="score";
 
     //public static final String Start_Point_Name="start_point_name";
    // public static final String End_Point_Name="end_point_nme";
@@ -41,7 +42,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
 
-        String CREATE_TABLE="CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ("+Table_Column_ID+" INTEGER PRIMARY KEY, "+Table_Column_1_Name+" VARCHAR, "+Table_Column_2_Email+" VARCHAR, "+Table_Column_3_Password+" VARCHAR)";
+        String CREATE_TABLE="CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ("+Table_Column_ID+" INTEGER PRIMARY KEY, "+Table_Column_1_Name+" VARCHAR, "+Table_Column_2_Email+" VARCHAR, "+Table_Column_3_Password+" VARCHAR, "+Table_Column_4_Score+" INTEGER)";
         String CREATE_TABLE_POINTS="CREATE TABLE IF NOT EXISTS "+TABLE_POINTS+" ("+Id_Point+" INTEGER PRIMARY KEY, "+Name+" VARCHAR, "+Description+" VARCHAR, "+CheckPointName+" VARCHAR)";
         database.execSQL(CREATE_TABLE);
         database.execSQL(CREATE_TABLE_POINTS);
@@ -79,10 +80,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         database.execSQL("INSERT INTO " + TABLE_POINTS+ "(Name,Description,CheckPointName ) VALUES ('DECA','Go to the structural analysis laboratory (room 9.27). In this lab we use computational methods and models scale to analyze the behavior of structures, both due to static actions (for example snow in the a building) as dynamic actions (eg earthquake effect on a building). Now they will try to understand what the relationship between the load (weight of the people) and the arrow (the vertical displacement) on a pedestrian bridge.','POINT26')");
         database.execSQL("INSERT INTO " + TABLE_POINTS+ "(Name,Description,CheckPointName ) VALUES ('ARMAS','The symbolism of the emblematic is as follows: Of metals, gold symbolizes righteousness, silver symbolizes faithfulness. Of the nail polish, red symbolizes the mood, blue the loyalty, the black the science. Of the pieces, the two litde brandões symbolize the knowledge theoretical and practical, the industry sprocket and carbuncle the wisdom. Find and photograph the UBI Coat of Arms. What does the motto mean: Scientia et Labore Altiora Petimus?','POINT27')");
         database.execSQL("INSERT INTO " + TABLE_POINTS+ "(Name,Description,CheckPointName ) VALUES ('ENCADEADO','Forever in my heart...','POINT28')");
-       // database.execSQL("INSERT INTO " + TABLE_POINTS+ "(Name,Description,CheckPointName ) VALUES ('TERMINUS','Return to the designated location within the time limit. Every minute of delay will be heavily penalized.','POINT29')");
-
-
-
     }
 
     @Override
@@ -97,100 +94,62 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public ArrayList<String> getAllPoints(){
 
         ArrayList<String> list=new ArrayList<String>();
-        // Open the database for reading
+
         SQLiteDatabase db = this.getReadableDatabase();
-        // Start the transaction.
         db.beginTransaction();
-
-
         try
         {
-
             String selectQuery = "SELECT * FROM "+ TABLE_POINTS;
             Cursor cursor = db.rawQuery(selectQuery, null);
             if(cursor.getCount() >0)
 
             {
                 while (cursor.moveToNext()) {
-                    // Add province name to arraylist
-                    String pname= cursor.getString(cursor.getColumnIndex("Name"));
-                    pname=pname.concat("-");
-                    pname=pname.concat(cursor.getString(cursor.getColumnIndex("Id")));
+                    String pname= cursor.getString(cursor.getColumnIndex("Id"));
+                    pname=pname.concat(". ");
+                    pname=pname.concat(cursor.getString(cursor.getColumnIndex("Name")));
                     list.add(pname);
-
                 }
-
-
             }
             db.setTransactionSuccessful();
-
         }
         catch (SQLiteException e)
         {
             e.printStackTrace();
-
         }
         finally
         {
             db.endTransaction();
-            // End the transaction.
             db.close();
-
-            // Close database
         }
         return list;
 
 
     }
 
-
     public Cursor getData(){
         SQLiteDatabase db = this.getWritableDatabase();
-int startDateQueryDate=1;
-int endDateQueryDate=28;
-
             String query = "SELECT * FROM " + TABLE_POINTS;
             Cursor data = db.rawQuery(query, null);
 
             return data;
 
     }
+
+    public Cursor getUserId(String email){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME+
+                " WHERE " + Table_Column_2_Email + " = '" + email + "'";;
+        Cursor data = db.rawQuery(query, null);
+        return data;
+
+    }
+
     public Cursor getDataFormUserTable(String name){
         SQLiteDatabase db = this.getWritableDatabase();
-        int startDateQueryDate=1;
-        int endDateQueryDate=20;
-
         String query = "SELECT * FROM " + name;
         Cursor data = db.rawQuery(query, null);
 
-        return data;
-
-    }
-
-
-
-    public Cursor getItemID(String name){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + Id_Point + "," + Description + " FROM " + TABLE_POINTS +
-                " WHERE " + Name + " = '" + name + "'";
-        Cursor data = db.rawQuery(query, null);
-        return data;
-    }
-
-
-    public Cursor getDatapoint(int id){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + Id_Point + "," + Description + " FROM " + TABLE_POINTS +
-                " WHERE " + Id_Point + " = '" + id + "'";
-        Cursor data = db.rawQuery(query, null);
-        return data;
-    }
-
-    public Cursor getItemIDD(String name){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + Id_Point + "," + CheckPointName + " FROM " + TABLE_POINTS +
-                " WHERE " + Name + " = '" + name + "'";
-        Cursor data = db.rawQuery(query, null);
         return data;
     }
 
@@ -204,6 +163,7 @@ int endDateQueryDate=28;
         db.execSQL(CREATE_TABLE);
 
     }
+
     public boolean insertData(String name,String tableName,int position,String description,String checkPassword) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -217,20 +177,44 @@ int endDateQueryDate=28;
         else
             return true;
     }
+
     public Cursor getDataFromUserTablee(int id,String name){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + Id_Point + "," + Description + " FROM " + name +
+        String query = "SELECT " + Id_Point + "," + Description + "," + PointPosition + " FROM " + name +
                 " WHERE " + Id_Point + " = '" + id + "'";
         Cursor data = db.rawQuery(query, null);
         return data;
     }
+
+    public Cursor getScore(String userEmail){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " + Table_Column_ID + "," + Table_Column_4_Score + " FROM " + TABLE_NAME +
+                " WHERE " + Table_Column_ID + " = '" + userEmail + "'";
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
+
     public Cursor ForVerifyPosition(int id,String name){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + Id_Point + "," + CheckPointName + " FROM " + name +
+        String query = "SELECT " + Id_Point + "," + CheckPointName + "," + PointPosition + " FROM " + name +
                 " WHERE " + Id_Point + " = '" + id + "'";
         Cursor data = db.rawQuery(query, null);
         return data;
     }
 
+    public void updateUserScore(String userId,int userScore){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + TABLE_NAME + " SET " + Table_Column_4_Score +
+                " = '" + (userScore) + "' WHERE " + Table_Column_ID + " = '" + userId + "'";
 
+        db.execSQL(query);
+    }
+
+    public void resetScore(String userId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + TABLE_NAME + " SET " + Table_Column_4_Score +
+                " = '" + (0) + "' WHERE " + Table_Column_ID + " = '" + userId + "'";
+
+        db.execSQL(query);
+    }
 }

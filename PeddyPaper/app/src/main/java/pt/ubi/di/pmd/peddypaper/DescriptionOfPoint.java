@@ -5,26 +5,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 public class DescriptionOfPoint extends Activity {
 
 
 
     private TextView editable_item;
-    private TextView idd;
-    Button verifyPosition;
-    SQLiteHelper mDatabaseHelper;
-    private int idInt;
-    private String selectedName;
-    private String userName;
+    private TextView descriptionOfPoint;
+    private Button verifyPosition;
+    private ImageView imageOfPoint;
 
+    private String selectedName;
+    private String userTableName;
+    private int id_end_point;
     private String description;
     private int selectedID;
+    private int positionPoint;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,35 +33,42 @@ public class DescriptionOfPoint extends Activity {
         setContentView(R.layout.description_of_point);
 
         editable_item = (TextView) findViewById(R.id.editable_item);
-        idd=(TextView)findViewById(R.id.description_of_point);
+        descriptionOfPoint=(TextView)findViewById(R.id.description_of_point);
         verifyPosition=(Button)findViewById(R.id.verifyPosition);
-
-        //mDatabaseHelper = new SQLiteHelper(this);
+        imageOfPoint=(ImageView)findViewById(R.id.imageOfPoint);
 
 
         Intent receivedIntent = getIntent();
         selectedID = receivedIntent.getIntExtra("id",-1);
         selectedName = receivedIntent.getStringExtra("name");
         description = receivedIntent.getStringExtra("description");
-        userName = receivedIntent.getStringExtra("userEmail");
+        userTableName = receivedIntent.getStringExtra("userNameOfTable");
+        id_end_point=receivedIntent.getIntExtra("end_point_number",-1);
+        positionPoint=receivedIntent.getIntExtra("positionPoint",-1);
 
-        //idVerify.setText(""+selectedID);
+
+        int imageResource=getResources().getIdentifier("@drawable/t"+positionPoint,null,this.getPackageName());
+        imageOfPoint.setImageResource(imageResource);
+
         editable_item.setText(selectedName);
-        idd.setText(description);
+        descriptionOfPoint.setText(description);
         verifyPosition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                // Opening new user registration activity using intent on button click.
+
                 Intent intent = new Intent(DescriptionOfPoint.this, PositionverifierActivity.class);
                 intent.putExtra("name", selectedID);
-                intent.putExtra("tableName", userName);
+                intent.putExtra("userNameOfTable", userTableName);
+                intent.putExtra("end_point_number", id_end_point);
+
                 startActivity(intent);
 
             }
         });
 
     }
+
 
 
 

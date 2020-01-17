@@ -74,7 +74,7 @@ public class RegisterActivity extends Activity {
     // SQLite table build method.
     public void SQLiteTableBuild() {
 
-        sqLiteDatabaseObj.execSQL("CREATE TABLE IF NOT EXISTS " + SQLiteHelper.TABLE_NAME + "(" + SQLiteHelper.Table_Column_ID + " PRIMARY KEY AUTOINCREMENT NOT NULL, " + SQLiteHelper.Table_Column_1_Name + " VARCHAR, " + SQLiteHelper.Table_Column_2_Email + " VARCHAR, " + SQLiteHelper.Table_Column_3_Password + " VARCHAR);");
+        sqLiteDatabaseObj.execSQL("CREATE TABLE IF NOT EXISTS " + SQLiteHelper.TABLE_NAME + "(" + SQLiteHelper.Table_Column_ID + " PRIMARY KEY AUTOINCREMENT NOT NULL, " + SQLiteHelper.Table_Column_1_Name + " VARCHAR, " + SQLiteHelper.Table_Column_2_Email + " VARCHAR, " + SQLiteHelper.Table_Column_3_Password + " VARCHAR, " + SQLiteHelper.Table_Column_4_Score + " INTEGER);");
 
     }
 
@@ -84,9 +84,9 @@ public class RegisterActivity extends Activity {
         // If editText is not empty then this block will executed.
         if(EditTextEmptyHolder == true)
         {
-
+int value=0;
             // SQLite query to insert data into table.
-            SQLiteDataBaseQueryHolder = "INSERT INTO "+SQLiteHelper.TABLE_NAME+" (name,email,password) VALUES('"+NameHolder+"', '"+EmailHolder+"', '"+PasswordHolder+"');";
+            SQLiteDataBaseQueryHolder = "INSERT INTO "+SQLiteHelper.TABLE_NAME+" (name,email,password,score) VALUES('"+NameHolder+"', '"+EmailHolder+"', '"+PasswordHolder+"','0');";
 
             // Executing query.
             sqLiteDatabaseObj.execSQL(SQLiteDataBaseQueryHolder);

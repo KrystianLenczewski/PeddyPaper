@@ -14,14 +14,16 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class RouteInformationActivity extends Activity {
-    SQLiteHelper myDb;
 
+    SQLiteHelper myDb;
     private ListView mListView;
-    String userName;
+    private String userTableName;
+    private int id_end_point;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_information);
+
         mListView = findViewById(R.id.listViewTips);
         myDb = new SQLiteHelper(this);
 
@@ -33,12 +35,13 @@ public class RouteInformationActivity extends Activity {
 
         Intent receivedIntent = getIntent();
         myDb = new SQLiteHelper(this);
-        userName = receivedIntent.getStringExtra("userEmail");
-        Cursor data = myDb.getDataFormUserTable(userName);
+        userTableName = receivedIntent.getStringExtra("userNameOfTable");
+        id_end_point=receivedIntent.getIntExtra("end_point_number",-1);
+        Cursor data = myDb.getDataFormUserTable(userTableName);
         ArrayList<String> listData = new ArrayList<>();
 
         while (data.moveToNext()) {
-            listData.add(data.getString(1)+" "+data.getInt(4));
+            listData.add(data.getInt(4)+". "+data.getString(1));
 
 
         }
@@ -46,20 +49,22 @@ public class RouteInformationActivity extends Activity {
         final ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listData);
         mListView.setAdapter(adapter);
 
-
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
                 String name = adapterView.getItemAtPosition(i).toString();
 
-                Cursor data = myDb.getDataFromUserTablee(i+1,userName);
+                Cursor data = myDb.getDataFromUserTablee(i+1,userTableName);
 
                 int itemID = -1;
                 String description="";
-
+                int positionPoint=0;
                 while (data.moveToNext()) {
                     itemID = data.getInt(0);
                     description=data.getString(1);
+                    positionPoint=data.getInt(2);
                 }
                 if (itemID > -1) {
 
@@ -67,14 +72,22 @@ public class RouteInformationActivity extends Activity {
                     editIntent.putExtra("id", itemID);
                     editIntent.putExtra("name", name);
                     editIntent.putExtra("description", description);
-                    editIntent.putExtra("userEmail", userName);
+                    editIntent.putExtra("userNameOfTable", userTableName);
+                    editIntent.putExtra("end_point_number", id_end_point);
+                    editIntent.putExtra("positionPoint", positionPoint);
 
 
                     startActivity(editIntent);
                 }
 
+                mListView.getChildAt(i).setEnabled(false);
+                mListView.getChildAt(i).setClickable(true);
+
+
             }
+
         });
     }
+
 
 }

@@ -21,6 +21,7 @@
         <activity android:name=".RouteInformationActivity"></activity>
         <activity android:name=".DescriptionOfPoint"></activity>
         <activity android:name=".PositionverifierActivity"></activity>
+        <activity android:name=".UserStatsActivity"></activity>
     </application>
 
 </manifest>

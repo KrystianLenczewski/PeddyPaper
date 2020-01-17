@@ -1,10 +1,8 @@
 package pt.ubi.di.pmd.peddypaper;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,24 +20,26 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class DashboardActivity extends Activity implements AdapterView.OnItemSelectedListener {
-int m=1;
+    int m=1;
     String EmailHolder;
-    TextView Email;
     SQLiteHelper datahelper;
+    String nameOfUserTable;
     Button LogOUT ;
+    int userId;
+    String userIdString;
     Button seeRoute;
     private Spinner spinner_start_point;
     private Spinner spinner_end_point;
     ArrayList<String> list_end;
+    String nameOfTable="";
     ArrayAdapter<String> adapter_end;
-    private int array[]=new int[13];
-    int i=0;
+    private int array[]=new int[14];
     class DirectedEdge {
-        // wierzcholek zrodlowy
+
         private final int from;
-        // wierzcholek docelowy
+
         private final int to;
-        // waga
+
         private final long weight;
 
         public DirectedEdge(int from, int to, int weight) {
@@ -62,20 +62,19 @@ int m=1;
 
         @Override
         public String toString() {
-           // array[1]=to;
-          //  array[2]=to;
+
             return String.format("%d->%d (%d) ", from, to, weight);
         }
     }
     class DirectedGraph {
-        // liczba wierzcholkow
+
         private final int v;
-        // liczba krawedzi
+
         private int e;
-        // listy sasiedztwa
+
         private final List<DirectedEdge>[] neighborhoodLists;
 
-        @SuppressWarnings("unchecked")
+
         public DirectedGraph(int v) {
             this.v = v;
             this.e = 0;
@@ -85,9 +84,6 @@ int m=1;
             }
         }
 
-        public int getNumberOfEdges() {
-            return e;
-        }
 
         public int getNumberOfVertices() {
             return v;
@@ -107,9 +103,9 @@ int m=1;
 
 
         class DistanceToEdge implements Comparable<DistanceToEdge> {
-            // krawedz
+
             private final int edge;
-            // odleglosc do tej krawedzi
+
             private long distance;
 
             public DistanceToEdge(int edge, long distance) {
@@ -172,36 +168,25 @@ int m=1;
             }
         }
 
-        // ////////////////////////////////////////////////////////////////////
-// przechowuje krawedz z ktorej jest najblizej do biezacej okreslonej
-// indeksem tablicy
+
         private DirectedEdge[] edgeTo;
-        // przechowuje najkrotsze znalezione odleglosci do danego wierzcholka
+
         private Long[] distanceTo;
-        // kolejka przechowujaca biezace krawedzie uszeregowane od najkrotszej do
-// najdluzszej
+
         private Queue<DistanceToEdge> priorityQueue;
 
         public DijkstraShortestPath(DirectedGraph graph, int source) {
-// inicjacja wewnetrznych struktur
             edgeTo = new DirectedEdge[graph.getNumberOfVertices()];
             distanceTo = new Long[graph.getNumberOfVertices()];
             priorityQueue = new PriorityQueue<DistanceToEdge>(
                     graph.getNumberOfVertices());
-
-// dla kazdego wierzcholka v ustawiamy najwieksza mozliwa wartosc jaka
-// moze przechowywac
             for (int v = 0; v < graph.getNumberOfVertices(); v++) {
                 distanceTo[v] = Long.MAX_VALUE;
             }
-// odleglosc do wierzcholka zrodlowego to 0
             distanceTo[source] = 0L;
 
-// wstawiamy wierzholek zrodlowy do kolejki, od niego rozpoczynamy
-// poszukiwania
             priorityQueue.offer(new DistanceToEdge(source, 0L));
 
-// przeprowadzamy relaksacje grafu dopoki kolejka nie jest pusta
             while (!priorityQueue.isEmpty()) {
                 relax(graph, priorityQueue.poll().getEdge());
             }
@@ -209,42 +194,28 @@ int m=1;
         }
 
         private void relax(DirectedGraph graph, int v) {
-// przegladamy listy sasiedztwa wszystkich wierzcholkow
             for (DirectedEdge edge : graph.getNeighborhoodList(v)) {
                 int w = edge.to();
-
-// sprawdzamy czy zmiana wierzcholka skroci dystans z wierzcholka
-// zrodlowego
                 if (distanceTo[w] > distanceTo[v] + edge.getWeight()) {
                     distanceTo[w] = distanceTo[v] + edge.getWeight();
                     edgeTo[w] = edge;
                     DistanceToEdge dte = new DistanceToEdge(w, distanceTo[w]);
 
-// jesli jest juz krawedz o tej wadze to ja usuwamy, bo
-// znalezlismy lepsza droge
                     priorityQueue.remove(dte);
-// wstawiamy nowa krawedz z aktualna znaleziona odlegloscia
                     priorityQueue.offer(dte);
                 }
             }
 
         }
 
-        // jesli zwrocona wartosc wynosi Long.MAX_VALUE to oznacza, ze dany
-// wierzcholek jest nieosiagalny ze zrodla
         public long getDistanceTo(int v) {
             return distanceTo[v];
         }
 
-        // jesli istnieje droga do danego wierzcholka jest mniejsza od
-// Long.MAX_VALUE, ktore zostalo inicjalnie ustawione dla wszystkich
-// wierzcholkow
         public boolean hasPathTo(int v) {
             return distanceTo[v] < Long.MAX_VALUE;
         }
 
-        // jesli nie istnieje sciezka do danego wierzcholka zostanie zwrocona pusta
-// kolekcja
         public Iterable<DirectedEdge> getPathTo(int v) {
             Deque<DirectedEdge> path = new ArrayDeque<DirectedEdge>();
 
@@ -366,14 +337,9 @@ int m=1;
         graph.addEdge(new DirectedEdge(27, 12, 22));
 
 
-
-
-
                 int source = started_point;
                 DijkstraShortestPath shortestPath = new DijkstraShortestPath(graph,
                         source);
-
-                // Wyswietla najkrotsze sciezki
                 int end_point=ended_point;
 
                 if (shortestPath.hasPathTo(end_point)) {
@@ -403,7 +369,7 @@ int m=1;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
          datahelper=new SQLiteHelper(this);
-        Email = (TextView)findViewById(R.id.textView1);
+       // Email = (TextView)findViewById(R.id.textView1);
         LogOUT = (Button)findViewById(R.id.button1);
         seeRoute = (Button)findViewById(R.id.seeRoute);
 
@@ -416,7 +382,7 @@ int m=1;
         spinner_start_point.setAdapter(adapter);
 
         list_end=datahelper.getAllPoints();
-       adapter_end=new ArrayAdapter<String>(this, R.layout.spinner_layout, R.id.text, list_end);
+         adapter_end=new ArrayAdapter<String>(this, R.layout.spinner_layout, R.id.text, list_end);
 
         spinner_end_point.setAdapter(adapter_end);
 
@@ -424,101 +390,121 @@ int m=1;
         spinner_start_point.setOnItemSelectedListener(this);
         spinner_end_point.setOnItemSelectedListener(this);
 
+        Intent receivedIntent = getIntent();
+        nameOfUserTable = receivedIntent.getStringExtra("userNameOfTable");
 
-        // Receiving User Email Send By MainActivity.
         EmailHolder = intent.getStringExtra(MainActivity.UserEmail);
 
-        // Setting up received email to TextView.
-        Email.setText(Email.getText().toString()+ EmailHolder);
+      //  Email.setText(Email.getText().toString()+ EmailHolder);
 
-        // Adding click listener to Log Out button.
+
+        Cursor dataUserId = datahelper.getUserId(EmailHolder);
+        while (dataUserId.moveToNext()) {
+            userId = dataUserId.getInt(0);
+             userIdString=Integer.toString(userId);
+        }
+
+
+
         LogOUT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                //Finishing current DashBoard activity on button click.
-                finish();
+                Intent intent=new Intent(DashboardActivity.this,MainActivity.class);
+                startActivity(intent);
 
                 Toast.makeText(DashboardActivity.this,"Log Out Successfull", Toast.LENGTH_LONG).show();
 
             }
         });
+
         seeRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Intent intent = new Intent(DashboardActivity.this, RouteInformationActivity.class);
-                intent.putExtra("userEmail", EmailHolder);
-                startActivity(intent);
-                function(id_start_point, id_end_point);
-                datahelper.newTableForUser(EmailHolder);
+                if (id_start_point != id_end_point) {
 
 
+                    if (userIdString != null) {
+                        nameOfTable = "T" + userIdString;
+                    } else {
+                        nameOfTable = null;
+                    }
+
+                    Intent intent = new Intent(DashboardActivity.this, RouteInformationActivity.class);
+                    if (nameOfTable != null) {
+                        intent.putExtra("userNameOfTable", nameOfTable);
+                    } else {
+                        intent.putExtra("userNameOfTable", nameOfUserTable);
 
 
-                int itemID = -1;
-                String nameOfPoint = "";
-                String description="";
-                String pointPassword="";
-                for (int i = 1; i <= 12; i++) {
-                    Cursor data = datahelper.getData();
-                    while (data.moveToNext()) {
-                        itemID = data.getInt(0);
-                        nameOfPoint = data.getString(1);
-                        description = data.getString(2);
-                        pointPassword = data.getString(3);
-
-
-                        if (array[i] == itemID) {
-                            datahelper.insertData(nameOfPoint, EmailHolder,array[i],description,pointPassword);
-                        }
-
+                    }
+                    intent.putExtra("end_point_number", id_end_point);
+                    startActivity(intent);
+                    function(id_start_point, id_end_point);
+                    if (nameOfTable != null) {
+                        datahelper.newTableForUser(nameOfTable);
+                    } else {
+                        datahelper.newTableForUser(nameOfUserTable);
                     }
 
 
-            }
-                for(int i=1;i<=12;i++){
-                    array[i]=0;
+                    int itemID = -1;
+                    String nameOfPoint = "";
+                    String description = "";
+                    String pointPassword = "";
+                    for (int i = 1; i <= 13; i++) {
+                        Cursor data = datahelper.getData();
+                        while (data.moveToNext()) {
+                            itemID = data.getInt(0);
+                            nameOfPoint = data.getString(1);
+                            description = data.getString(2);
+                            pointPassword = data.getString(3);
 
-                }
-                }
 
-        });
+                            if (array[i] == itemID) {
+                                if (nameOfTable != null) {
+                                    datahelper.insertData(nameOfPoint, nameOfTable, array[i], description, pointPassword);
+                                } else {
+                                    datahelper.insertData(nameOfPoint, nameOfUserTable, array[i], description, pointPassword);
+                                }
+
+                            }
+
+                        }
+
+
+                    }
+                    for (int i = 1; i <= 13; i++) {
+                        array[i] = 0;
+
+                    }
+                } else {
+                    Toast.makeText(DashboardActivity.this, "You choosen the same start and end point", Toast.LENGTH_SHORT).show();
+                }
+            }});
 
     }
     int id_start_point;
     int id_end_point;
-    int k=0;
-    String tempRemovedItem ;
+
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
         if(parent.getId() == spinner_start_point.getId())
         {
-            k=1;
+
             switch (position) {
                 case 0:
                     id_start_point=0;
                     break;
                 case 1:
                     id_start_point=1;
-           // array[1]=2;
-
-
                     break;
                 case 2:
                     id_start_point=2;
-                    Toast.makeText(DashboardActivity.this,"You choose position 3", Toast.LENGTH_SHORT).show();
-                   // array[2]=3;
-
-
-
                     break;
                 case 3:
                     id_start_point=3;
-                    Toast.makeText(DashboardActivity.this,"You choose position 3", Toast.LENGTH_SHORT).show();
-                   // array[3]=4;
-
-
                     break;
                 case 4:
                     id_start_point=4;
@@ -598,50 +584,18 @@ int m=1;
             }
         }
 
-   /* if(k==1) {
-
-    k=0;
-    list_end.remove(spinner_start_point.getSelectedItem().toString());
-
-
-    tempRemovedItem = spinner_start_point.getSelectedItem().toString();
-    adapter_end.notifyDataSetChanged();
-    spinner_end_point.setAdapter(adapter_end);
-
-
-
-
-    }*/
-
-
          if(parent.getId() == spinner_end_point.getId())
         {
 
             switch (position) {
                 case 0:
-                    if(id_start_point==0)
-                    {
-                        Toast.makeText(DashboardActivity.this,"You chosen this point as starting point!!!! ", Toast.LENGTH_SHORT).show();
-                    }else
-                    {
-                        id_end_point=0;
-                    }
-
+                    id_end_point=0;
                     break;
                 case 1:
-                    if(id_start_point==1)
-                    {
-                        Toast.makeText(DashboardActivity.this,"You chosen this point as starting point!!!! ", Toast.LENGTH_SHORT).show();
-                    }else {
-                        id_end_point = 1;
-                    }
-
+                    id_end_point = 1;
                     break;
                 case 2:
-
                     id_end_point=2;
-                    Toast.makeText(DashboardActivity.this,"You chosen "+id_end_point, Toast.LENGTH_SHORT).show();
-
                     break;
                 case 3:
                     id_end_point=3;
@@ -729,8 +683,4 @@ int m=1;
     public void onNothingSelected(AdapterView<?> parent) {
         // TODO Auto-generated method stub
     }
-
-
-
-
 }
